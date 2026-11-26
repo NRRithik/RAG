@@ -19,7 +19,3 @@ env/
 # Vector database local storage
 chroma/
 .chroma/
-
-# Personal profile document (contains private bio/info)
-sample_document.txt
-

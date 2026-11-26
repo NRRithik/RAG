@@ -1,0 +1,12 @@
+Rithik is 23 years old , DOB is 11 June 2003 , lives in Chennai , Tamil Nadu . 
+His hobbies are playing cricket , cycling , chess .
+He pursued his SSLC at Everwin matriculation Hr Sec School (Batch 2018-2019) .
+Then he completed his Diploma in Electrical and Electronics Engineering from P T LEE Chengalvaraya Naicker polytechnic college (Batch 2019-2022).
+His qualification is B.E in Computer Science and Engineering from Velammal Engineering College (Batch 2022-2025) .
+He have completed a python full stack course from Pumo Technovation .
+Skills he have Js , React , Node.js , Python , Sql , GenAI and etc . 
+He have work experience of 1+ year as software engineer in startup .
+He worked for Yaantran Software as Software Engineer from July 2025 - June 2026.
+Then he worked for Digispoc Technology as Junior Developer from July 2026 - August 2026 .
+He have also worked on various AI projects .
+He is looking for an opportunity to work as AI Developer at a reputable organization .

@@ -31,10 +31,14 @@ with st.sidebar:
 # Cache RAG pipeline; re-indexes automatically if sample_document.txt is updated
 @st.cache_resource(show_spinner=False)
 def load_rag_pipeline(file_mtime: float):
+    # Check environment variable (.env) or Streamlit Cloud Secrets
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        st.error("GOOGLE_API_KEY not found in .env file.")
-        return None
+        if "GOOGLE_API_KEY" in st.secrets:
+            api_key = st.secrets["GOOGLE_API_KEY"]
+        else:
+            st.error("GOOGLE_API_KEY not found. Please set it in .env or Streamlit Secrets.")
+            return None
     
     if not os.path.exists(DOC_PATH):
         st.error(f"'{DOC_PATH}' not found. Please create it in the project folder.")
