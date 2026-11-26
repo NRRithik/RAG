@@ -28,29 +28,42 @@ with st.sidebar:
     st.markdown("- *What is your work experience?*")
     st.markdown("- *What is your education qualification?*")
 
-# Cache RAG pipeline; re-indexes automatically if sample_document.txt is updated
-@st.cache_resource(show_spinner=False)
-def load_rag_pipeline(file_mtime: float):
-    # Check environment variable (.env) or Streamlit Cloud Secrets
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        if "GOOGLE_API_KEY" in st.secrets:
-            api_key = st.secrets["GOOGLE_API_KEY"]
-        else:
-            st.error("GOOGLE_API_KEY not found. Please set it in .env or Streamlit Secrets.")
-            return None
+# Helper to fetch API key from environment (.env) or Streamlit Cloud Secrets
+def get_api_key():
+    key = os.getenv("GOOGLE_API_KEY")
+    if key:
+        return key.strip()
     
+    try:
+        for k in ["GOOGLE_API_KEY", "google_api_key", "GEMINI_API_KEY", "gemini_api_key"]:
+            if k in st.secrets:
+                return str(st.secrets[k]).strip()
+    except Exception:
+        pass
+    
+    return None
+
+api_key = get_api_key()
+
+if not api_key:
+    st.error("⚠️ **GOOGLE_API_KEY not found.** Please ensure you saved it in Streamlit Cloud Secrets.")
+    st.info("In Streamlit Cloud: Click **Manage app** (bottom-right) ➔ **Settings** (gear) ➔ **Secrets**, then add:\n```toml\nGOOGLE_API_KEY = \"your_gemini_api_key\"\n```")
+    st.stop()
+
+# Cache RAG pipeline; re-indexes automatically if document or API key changes
+@st.cache_resource(show_spinner=False)
+def load_rag_pipeline(file_mtime: float, key: str):
     if not os.path.exists(DOC_PATH):
-        st.error(f"'{DOC_PATH}' not found. Please create it in the project folder.")
+        st.error(f"'{DOC_PATH}' not found in the project folder.")
         return None
 
-    return RAGPipeline(doc_path=DOC_PATH, api_key=api_key)
+    return RAGPipeline(doc_path=DOC_PATH, api_key=key)
 
 # Get file modification time to trigger auto-reload when the file changes
 mtime = os.path.getmtime(DOC_PATH) if os.path.exists(DOC_PATH) else 0
 
-# Load pipeline silently without technical developer messages
-pipeline = load_rag_pipeline(mtime)
+# Load pipeline with API key so cache invalidates if key changes
+pipeline = load_rag_pipeline(mtime, api_key)
 
 # Chat Interface
 if "messages" not in st.session_state:
